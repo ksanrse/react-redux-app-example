@@ -2,13 +2,15 @@ import { useCallback, useEffect, useState } from "react";
 import Button from "./Button/Button";
 import Modal from "./Modal/Modal";
 import useInput from "../../hooks/useInput";
-
-type User = {
-  id: string;
-  name: string;
-};
+import type { User } from "../types";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../state/store";
+import { addFriend, removeFriend } from "../state/friends/friendsSlice";
+import classes from "./EffectSection.module.css";
 
 export default function EffectSection() {
+  const friends = useSelector((state: RootState) => state.friends.friends);
+  const dispatch = useDispatch<AppDispatch>();
   const input = useInput();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -32,17 +34,12 @@ export default function EffectSection() {
 
   return (
     <section>
-      <h3>Effect</h3>
+      <h3>Новые друзья</h3>
       <Button onClick={openModal}>Открыть информацию</Button>
 
       <Modal open={isModalOpen}>
-        <h3>Hello modal</h3>{" "}
-        <p>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ex nam
-          aliquam ut, architecto fugiat consequatur quidem explicabo quibusdam
-          quis assumenda veniam harum magni, accusantium aut! Debitis libero
-          praesentium officia est?
-        </p>
+        <h3>Добавь друзей</h3>
+        <p>Перед тобой список людей, которых ты можешь добавить в друзья.</p>
         <Button onClick={() => setIsModalOpen(false)}>Закрыть модалку</Button>
       </Modal>
 
@@ -51,14 +48,38 @@ export default function EffectSection() {
       {!loading && (
         <>
           <input type="text" {...input} />
-          <ul>
+          <ul className={classes.users}>
             {users
               .filter((user) =>
                 user.name.toLowerCase().includes(input.value.toLowerCase()),
               )
-              .map((user) => (
-                <li key={user.id}>{user.name}</li>
-              ))}
+              .map((user) => {
+                const isFriend = friends.some(
+                  (friend) => friend.id === user.id,
+                );
+                return (
+                  <li key={user.id} className={isFriend ? classes.friend : ""}>
+                    {user.name}
+                    {isFriend ? (
+                      <Button
+                        onClick={() => {
+                          dispatch(removeFriend(user.id));
+                        }}
+                      >
+                        Удалить из друзей
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          dispatch(addFriend(user));
+                        }}
+                      >
+                        Добавить в друзья
+                      </Button>
+                    )}
+                  </li>
+                );
+              })}
           </ul>
         </>
       )}

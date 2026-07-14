@@ -9,6 +9,8 @@ import { useState } from "react";
 import FeedbackSection from "./components/FeedbackSection.tsx";
 import type { Tab } from "./types.ts";
 import EffectSection from "./components/EffectSection.tsx";
+import FriendsList from "./components/FriendsList/FriendsList.tsx";
+
 
 function App() {
   const [tab, setTab] = useState<Tab>("effect");
@@ -28,6 +30,7 @@ function App() {
         {tab === "main" && <RustifySection />}
         {tab === "feedback" && <FeedbackSection />}
         {tab === "effect" && <EffectSection />}
+        {tab === "friends" && <FriendsList />}
       </main>
     </>
   );

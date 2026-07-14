@@ -21,7 +21,13 @@ export default function TabsSection({
         Обратная связь
       </Button>
       <Button isActive={active === "effect"} onClick={() => onChange("effect")}>
-        Обратная связь
+        Добавить друзей
+      </Button>
+      <Button
+        isActive={active === "friends"}
+        onClick={() => onChange("friends")}
+      >
+        Друзья
       </Button>
     </section>
   );

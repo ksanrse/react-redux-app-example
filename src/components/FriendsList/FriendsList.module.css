@@ -1,0 +1,22 @@
+.friends > ul > li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.friends > ul > li > button:not(:disabled) {
+  min-width: auto;
+  padding: 8px 12px;
+  color: #b42318;
+  background: rgba(180, 35, 24, 0.1);
+  border-color: transparent;
+}
+
+.friends > ul > li > button:not(:disabled):hover {
+  border-color: rgba(180, 35, 24, 0.5);
+}
+
+.friends > ul > li > button:not(:disabled):focus-visible {
+  outline-color: #b42318;
+}
