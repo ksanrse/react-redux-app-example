@@ -1,10 +1,11 @@
+import { memo } from "react";
+
 interface WaysToRustifyProps {
-  key: number;
   title: string;
   description: string;
 }
 
-export default function WayToRustify({
+export default memo(function WayToRustify({
   title,
   description,
 }: WaysToRustifyProps) {
@@ -16,4 +17,4 @@ export default function WayToRustify({
       </div>
     </li>
   );
-}
+});

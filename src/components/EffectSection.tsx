@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Button from "./Button/Button";
 import Modal from "./Modal/Modal";
 import useInput from "../../hooks/useInput";
@@ -15,6 +15,14 @@ export default function EffectSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
+
+  const filteredUsers = useMemo(
+    () =>
+      users.filter((user) =>
+        user.name.toLowerCase().includes(input.value.toLowerCase()),
+      ),
+    [users, input.value],
+  );
 
   function openModal() {
     setIsModalOpen(true);
@@ -49,37 +57,31 @@ export default function EffectSection() {
         <>
           <input type="text" {...input} />
           <ul className={classes.users}>
-            {users
-              .filter((user) =>
-                user.name.toLowerCase().includes(input.value.toLowerCase()),
-              )
-              .map((user) => {
-                const isFriend = friends.some(
-                  (friend) => friend.id === user.id,
-                );
-                return (
-                  <li key={user.id} className={isFriend ? classes.friend : ""}>
-                    {user.name}
-                    {isFriend ? (
-                      <Button
-                        onClick={() => {
-                          dispatch(removeFriend(user.id));
-                        }}
-                      >
-                        Удалить из друзей
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() => {
-                          dispatch(addFriend(user));
-                        }}
-                      >
-                        Добавить в друзья
-                      </Button>
-                    )}
-                  </li>
-                );
-              })}
+            {filteredUsers.map((user) => {
+              const isFriend = friends.some((friend) => friend.id === user.id);
+              return (
+                <li key={user.id} className={isFriend ? classes.friend : ""}>
+                  {user.name}
+                  {isFriend ? (
+                    <Button
+                      onClick={() => {
+                        dispatch(removeFriend(user.id));
+                      }}
+                    >
+                      Удалить из друзей
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        dispatch(addFriend(user));
+                      }}
+                    >
+                      Добавить в друзья
+                    </Button>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </>
       )}

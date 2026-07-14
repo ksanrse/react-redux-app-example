@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Component } from "react";
 import { styled } from "styled-components";
 
 const HeaderContainer = styled.header`
@@ -7,23 +7,35 @@ const HeaderContainer = styled.header`
   padding: 4px 8px;
 `;
 
-export default function Header() {
-  const [timeNow, setTimeNow] = useState(new Date());
+interface HeaderState {
+  timeNow: Date;
+}
 
-  useEffect(() => {
-    const intervalID = setInterval(() => {
-      setTimeNow(new Date());
+export default class Header extends Component<
+  Record<string, never>,
+  HeaderState
+> {
+  private intervalID?: ReturnType<typeof setInterval>;
+  state: HeaderState = {
+    timeNow: new Date(),
+  };
+
+  componentDidMount(): void {
+    this.intervalID = setInterval(() => {
+      this.setState({ timeNow: new Date() });
     }, 1000);
+  }
 
-    return () => {
-      clearInterval(intervalID);
-    };
-  }, []);
+  componentWillUnmount(): void {
+    clearInterval(this.intervalID);
+  }
 
-  return (
-    <HeaderContainer>
-      <span>Привет</span>
-      <span>Время сейчас: {timeNow.toLocaleTimeString()}</span>
-    </HeaderContainer>
-  );
+  render() {
+    return (
+      <HeaderContainer>
+        <span>Привет</span>
+        <span>Время сейчас: {this.state.timeNow.toLocaleTimeString()}</span>
+      </HeaderContainer>
+    );
+  }
 }
